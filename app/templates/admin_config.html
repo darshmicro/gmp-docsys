@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Company Settings</h1>
+<p class="muted">Changes here are GMP-critical configuration and are recorded in the audit trail with old/new values.</p>
+<div class="card" style="max-width:480px">
+<form method="post" action="/admin/config" enctype="multipart/form-data">
+  <label>Company Name</label>
+  <input name="company_name" value="{{ company_name or '' }}" required>
+  <label>Company Logo</label>
+  {% if logo_path %}
+    <div style="margin:8px 0"><img src="{{ logo_path }}" alt="Current logo" style="max-height:60px"></div>
+  {% endif %}
+  <input type="file" name="logo" accept="image/*">
+  <br><br>
+  <button class="btn" type="submit">Save</button>
+</form>
+</div>
+{% endblock %}

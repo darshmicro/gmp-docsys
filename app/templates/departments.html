@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Departments</h1>
+<a class="btn" href="/admin/departments/new">+ Add Department</a>
+<br><br>
+<div class="card">
+<table>
+  <tr><th>Code</th><th>Name</th><th>Status</th><th></th></tr>
+  {% for d in depts %}
+  <tr>
+    <td>{{ d.code }}</td><td>{{ d.name }}</td>
+    <td>{% if d.is_active %}<span class="badge active">ACTIVE</span>{% else %}<span class="badge archived">INACTIVE</span>{% endif %}</td>
+    <td><a class="btn secondary" href="/admin/departments/{{ d.id }}/edit">Edit</a></td>
+  </tr>
+  {% endfor %}
+</table>
+</div>
+{% endblock %}

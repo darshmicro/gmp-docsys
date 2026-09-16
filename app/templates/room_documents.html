@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Documents in {{ room.code }} — {{ room.name }}</h1>
+<div class="card">
+<table>
+  <tr><th>Doc No.</th><th>Title</th><th>Copy</th><th>Status</th><th>Location Code</th></tr>
+  {% for c in copies %}
+  <tr>
+    <td><a href="/documents/{{ c.document_id }}">{{ c.document.document_number }}</a></td>
+    <td>{{ c.document.title }}</td>
+    <td>{{ c.copy_number }}</td>
+    <td><span class="badge {{ c.copy_status|lower }}">{{ c.copy_status }}</span></td>
+    <td>{{ c.current_location_code or '—' }}</td>
+  </tr>
+  {% else %}
+  <tr><td colspan="5" class="muted">No documents currently stored in this room.</td></tr>
+  {% endfor %}
+</table>
+</div>
+{% endblock %}

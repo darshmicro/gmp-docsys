@@ -1,0 +1,56 @@
+# ============================================================================
+# NEVER commit these — they either contain runtime data, secrets, or are
+# machine-generated. If you're not sure whether something should be on this
+# list, err on the side of adding it here rather than committing it.
+# ============================================================================
+
+# The actual database file (demo/dev SQLite). In production you're on SQL
+# Server anyway, but if you ever run the demo mode from this checkout,
+# never let this file reach GitHub — it can contain real user records,
+# document metadata, and password hashes.
+gmpdoctrack.db
+*.db
+*.db-journal
+
+# Python runtime artifacts
+__pycache__/
+*.pyc
+*.pyo
+.Python
+*.egg-info/
+venv/
+.venv/
+
+# Uploaded company logo / any future file uploads — these belong to your
+# specific deployment, not the shared codebase.
+app/static/uploads/*
+!app/static/uploads/.gitkeep
+
+# Environment / secrets files, if you ever create one
+.env
+.env.*
+*.local.bat
+*.local.sh
+
+# These two files get edited with real secrets in place (a real SQL
+# Server password, a real session-secret value) as part of normal setup
+# — see docs/Installation_Guide_Complete.md. That means the discipline
+# has to happen at commit time, not just from a filename pattern: before
+# every commit, check "git status" or GitHub Desktop's changed-files
+# list and make sure neither of these ever gets committed once it holds
+# a real secret. Both files carry an explicit warning comment for this
+# same reason. If you ever want the extra safety of gitignore actually
+# catching it, save your edited copy under a name matching this pattern
+# instead of editing the tracked file in place (e.g.
+# set_db_env.PRODUCTION.bat) — but either way, checking before you
+# commit is what actually protects you.
+deployment/windows/start_server.*.bat
+!deployment/windows/start_server.bat
+deployment/windows/set_db_env.*.bat
+!deployment/windows/set_db_env.bat
+
+# OS/editor noise
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

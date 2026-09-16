@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Storage Map Management</h1>
+<p class="muted">Add or edit racks, sub-racks, shelves, and positions under each room.</p>
+
+{% for r in tree %}
+<div class="card">
+  <h2>{{ r.room.code }} — {{ r.room.name }}
+    <a class="btn secondary" style="float:right" href="/storage/racks/new?room_id={{ r.room.id }}">+ Add Rack</a>
+  </h2>
+  {% for rk in r.racks %}
+  <div style="margin-left:16px;border-left:2px solid #dbe3e5;padding-left:12px;margin-bottom:10px">
+    <strong>Rack {{ rk.rack.rack_number }}</strong>
+    <a class="btn secondary" href="/storage/racks/{{ rk.rack.id }}/edit">Edit</a>
+    <a class="btn secondary" href="/storage/subracks/new?rack_id={{ rk.rack.id }}">+ Add Sub-Rack</a>
+    {% for sr in rk.sub_racks %}
+    <div style="margin-left:16px;border-left:2px solid #dbe3e5;padding-left:12px;margin-top:6px">
+      <span>Sub-Rack {{ sr.sub_rack.sub_rack_number }}</span>
+      <a class="btn secondary" href="/storage/subracks/{{ sr.sub_rack.id }}/edit">Edit</a>
+      <a class="btn secondary" href="/storage/shelves/new?sub_rack_id={{ sr.sub_rack.id }}">+ Add Shelf</a>
+      {% for sh in sr.shelves %}
+      <div style="margin-left:16px;border-left:2px solid #dbe3e5;padding-left:12px;margin-top:4px">
+        <span class="muted">Shelf {{ sh.shelf.shelf_number }}</span>
+        <a class="btn secondary" href="/storage/shelves/{{ sh.shelf.id }}/edit">Edit</a>
+        <a class="btn secondary" href="/storage/positions/new?shelf_id={{ sh.shelf.id }}">+ Add Position</a>
+        <span class="muted">
+          Positions:
+          {% for p in sh.positions %}
+            <a href="/storage/positions/{{ p.id }}/edit">{{ p.position_number }}</a>{% if not loop.last %},{% endif %}
+          {% else %}none{% endfor %}
+        </span>
+      </div>
+      {% endfor %}
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <p class="muted">No racks yet in this room.</p>
+  {% endfor %}
+</div>
+{% endfor %}
+{% endblock %}

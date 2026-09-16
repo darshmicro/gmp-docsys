@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>{{ "Edit" if dept else "Add" }} Department</h1>
+<div class="card" style="max-width:420px">
+<form method="post" action="{{ '/admin/departments/' + dept.id|string + '/edit' if dept else '/admin/departments/new' }}">
+  <label>Code</label>
+  <input name="code" value="{{ dept.code if dept else '' }}" required>
+  <label>Name</label>
+  <input name="name" value="{{ dept.name if dept else '' }}" required>
+  {% if dept %}
+  <label><input type="checkbox" name="is_active" value="true" {% if dept.is_active %}checked{% endif %} style="width:auto;display:inline"> Active</label>
+  {% endif %}
+  <br><br>
+  <button class="btn" type="submit">Save</button>
+</form>
+</div>
+{% endblock %}

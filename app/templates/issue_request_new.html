@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Request a Document</h1>
+<p class="muted">Pick any available document copy below, and submit a request — a Doc Cell User or Admin will need to approve it before it's issued to you.</p>
+
+{% if error %}<div class="error-box">{{ error }}</div><br>{% endif %}
+
+<div class="card" style="max-width:560px">
+<form method="post" action="/issue-requests/new">
+  <label>Available Document</label>
+  <select name="document_copy_id" required>
+    <option value="">-- select a document --</option>
+    {% for c in available_copies %}
+    <option value="{{ c.id }}">
+      {{ c.document.document_number }} rev {{ c.document.revision_number }} — {{ c.document.title }}
+      (Copy {{ c.copy_number }}{% if c.current_location_code %}, at {{ c.current_location_code }}{% endif %})
+    </option>
+    {% endfor %}
+  </select>
+  <label>Purpose</label>
+  <input name="purpose" placeholder="Why do you need this document?">
+  <br><br>
+  <button class="btn" type="submit">Submit Request</button>
+</form>
+{% if not available_copies %}
+<p class="muted" style="margin-top:12px">No documents are currently available to request — everything is either already issued, archived, or not yet placed in storage. Try Search to see full document status.</p>
+{% endif %}
+</div>
+{% endblock %}

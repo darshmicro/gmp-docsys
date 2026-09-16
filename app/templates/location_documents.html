@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Documents at {{ breadcrumb.location_code if breadcrumb else 'Unknown Location' }}</h1>
+{% if breadcrumb %}
+<p class="muted">{{ breadcrumb.room }} → Rack {{ breadcrumb.rack }} → Sub-Rack {{ breadcrumb.sub_rack }} → Shelf {{ breadcrumb.shelf }} → Position {{ breadcrumb.position }}</p>
+{% endif %}
+<div class="card">
+<table>
+  <tr><th>Doc No.</th><th>Title</th><th>Copy</th><th>Status</th></tr>
+  {% for c in copies %}
+  <tr>
+    <td><a href="/documents/{{ c.document_id }}">{{ c.document.document_number }}</a></td>
+    <td>{{ c.document.title }}</td>
+    <td>{{ c.copy_number }}</td>
+    <td><span class="badge {{ c.copy_status|lower }}">{{ c.copy_status }}</span></td>
+  </tr>
+  {% else %}
+  <tr><td colspan="4" class="muted">No documents currently stored at this location.</td></tr>
+  {% endfor %}
+</table>
+</div>
+{% endblock %}

@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Issued Documents</h1>
+<p class="muted">Every document copy currently out with someone.</p>
+<div class="card">
+<table>
+  <tr>
+    <th>Document</th><th>Copy</th><th>Issued To</th><th>Purpose</th>
+    <th>Issued</th><th>Expected Return</th><th>Issued By</th><th>Status</th>
+  </tr>
+  {% for i in issues %}
+  <tr>
+    <td><a href="/documents/{{ i.document_copy.document_id }}">{{ i.document_copy.document.document_number }}</a></td>
+    <td>{{ i.document_copy.copy_number }}</td>
+    <td>{{ i.issued_to.full_name }}</td>
+    <td>{{ i.purpose or '—' }}</td>
+    <td>{{ i.issue_datetime.strftime('%d-%b-%Y') }}</td>
+    <td>{{ i.expected_return_date.strftime('%d-%b-%Y') }}</td>
+    <td>{{ i.issued_by.full_name }}</td>
+    <td>
+      {% if i.expected_return_date < today %}
+        <span class="badge overdue">OVERDUE</span>
+      {% else %}
+        <span class="badge issued">ISSUED</span>
+      {% endif %}
+    </td>
+  </tr>
+  {% else %}
+  <tr><td colspan="8" class="muted">No documents are currently issued.</td></tr>
+  {% endfor %}
+</table>
+</div>
+{% endblock %}

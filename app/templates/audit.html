@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Audit Trail</h1>
+<p class="muted">Read-only. This log cannot be edited or deleted from the application.</p>
+<div class="card">
+<table>
+  <tr><th>Date/Time (UTC)</th><th>User</th><th>Module</th><th>Action</th><th>Record</th><th>Old → New</th><th>Reason</th></tr>
+  {% for e in entries %}
+  <tr>
+    <td>{{ e.event_datetime_utc.strftime('%d-%b-%Y %H:%M:%S') }}</td>
+    <td>{{ e.user_name }}</td>
+    <td>{{ e.module }}</td>
+    <td>{{ e.action }}</td>
+    <td>{{ e.record_type }}{% if e.record_id %} #{{ e.record_id }}{% endif %}</td>
+    <td class="muted">{{ e.old_value or '' }}{% if e.old_value and e.new_value %} → {% endif %}{{ e.new_value or '' }}</td>
+    <td class="muted">{{ e.reason or '' }}</td>
+  </tr>
+  {% endfor %}
+</table>
+</div>
+{% endblock %}

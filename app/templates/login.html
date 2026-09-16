@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Login — GMP Document Tracking</title>
+<link rel="stylesheet" href="/static/css/style.css"></head>
+<body>
+<div class="login-wrap">
+  <div class="login-box">
+    <h1>🧪 GMP Doc Tracking</h1>
+    {% if auth_mode == "AD" %}
+      <p class="muted">Sign in with your normal company network (Windows) username and password.</p>
+    {% else %}
+      <p class="muted">Sign in with your account.</p>
+    {% endif %}
+    {% if error %}<div class="error-box">{{ error }}</div><br>{% endif %}
+    <form method="post" action="/login">
+      <input type="hidden" name="next" value="{{ next or '/dashboard' }}">
+      <label>Username</label>
+      {% if auth_mode == "AD" %}
+        <input name="username" placeholder="jsmith" required>
+        <p class="muted" style="margin-top:4px">Just your username — no domain prefix, no backslash.</p>
+      {% else %}
+        <input name="username" placeholder="local:sysadmin" required>
+      {% endif %}
+      <label>Password</label>
+      <input name="password" type="password" required>
+      <br><br>
+      <button class="btn" type="submit" style="width:100%">Sign In</button>
+    </form>
+    {% if auth_mode != "AD" %}
+    <p class="muted" style="margin-top:16px">
+      Demo accounts: local:sysadmin / local:docadmin / local:docuser / local:viewer<br>
+      Password: ChangeMe123!
+    </p>
+    {% else %}
+    <p class="muted" style="margin-top:16px">
+      First time signing in? Your account is created automatically, but a
+      System Administrator must give you a role before you can use most
+      features — contact them if you see "You don't have permission" after
+      logging in.
+    </p>
+    {% endif %}
+  </div>
+</div>
+</body></html>

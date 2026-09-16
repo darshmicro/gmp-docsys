@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>{{ "Edit" if sub_rack else "Add" }} Sub-Rack in Rack {{ rack.rack_number }}</h1>
+<div class="card" style="max-width:420px">
+<form method="post" action="{{ '/storage/subracks/' + sub_rack.id|string + '/edit' if sub_rack else '/storage/subracks/new' }}">
+  {% if not sub_rack %}<input type="hidden" name="rack_id" value="{{ rack.id }}">{% endif %}
+  <label>Sub-Rack Number</label><input name="sub_rack_number" value="{{ sub_rack.sub_rack_number if sub_rack else '' }}" placeholder="SR04" required>
+  <label>Capacity</label><input name="capacity" type="number" value="{{ sub_rack.capacity if sub_rack else '' }}">
+  {% if sub_rack %}
+  <label><input type="checkbox" name="is_active" value="true" {% if sub_rack.is_active %}checked{% endif %} style="width:auto;display:inline"> Active</label>
+  {% endif %}
+  <br><br>
+  <button class="btn" type="submit">Save</button>
+</form>
+</div>
+{% endblock %}

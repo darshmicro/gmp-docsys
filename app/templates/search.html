@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Search Documents</h1>
+<div class="card">
+<form method="get" action="/search">
+  <div class="grid cols-3">
+    <div><label>Keyword (No. / Title)</label><input name="q" value="{{ q or '' }}"></div>
+    <div><label>Status</label>
+      <select name="status">
+        <option value="">Any</option>
+        {% for s in ["ACTIVE","UNDER_REVIEW","SUPERSEDED","OBSOLETE","ARCHIVED","WITHDRAWN","MISSING"] %}
+        <option value="{{ s }}" {% if status==s %}selected{% endif %}>{{ s }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div><label>Location Code contains</label><input name="location_code"></div>
+  </div>
+  <br><button class="btn" type="submit">Search</button>
+</form>
+</div>
+
+<div class="card">
+<table>
+  <tr><th>Doc No.</th><th>Title</th><th>Status</th></tr>
+  {% for d in results %}
+  <tr>
+    <td><a href="/documents/{{ d.id }}">{{ d.document_number }}</a></td>
+    <td>{{ d.title }}</td>
+    <td><span class="badge {{ d.status|lower }}">{{ d.status }}</span></td>
+  </tr>
+  {% else %}
+  <tr><td colspan="3" class="muted">No matching documents.</td></tr>
+  {% endfor %}
+</table>
+</div>
+{% endblock %}

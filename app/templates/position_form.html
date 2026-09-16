@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>{{ "Edit" if position else "Add" }} Position on Shelf {{ shelf.shelf_number }}</h1>
+<div class="card" style="max-width:420px">
+<form method="post" action="{{ '/storage/positions/' + position.id|string + '/edit' if position else '/storage/positions/new' }}">
+  {% if not position %}<input type="hidden" name="shelf_id" value="{{ shelf.id }}">{% endif %}
+  <label>Position Number</label><input name="position_number" value="{{ position.position_number if position else '' }}" placeholder="P04" required>
+  {% if position %}
+  <label><input type="checkbox" name="is_active" value="true" {% if position.is_active %}checked{% endif %} style="width:auto;display:inline"> Active</label>
+  <p class="muted">Current code: {{ position.location_code }}</p>
+  {% endif %}
+  <br><br>
+  <button class="btn" type="submit">Save</button>
+</form>
+</div>
+{% endblock %}

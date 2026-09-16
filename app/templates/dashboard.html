@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Dashboard</h1>
+
+<h2>Document Statistics</h2>
+<div class="grid cols-4">
+  <div class="card stat-card"><div class="num">{{ doc_stats.total }}</div><div class="label">Total Documents</div></div>
+  <div class="card stat-card"><div class="num">{{ doc_stats.active }}</div><div class="label">Active</div></div>
+  <div class="card stat-card"><div class="num">{{ doc_stats.superseded }}</div><div class="label">Superseded</div></div>
+  <div class="card stat-card"><div class="num">{{ doc_stats.archived }}</div><div class="label">Archived</div></div>
+  <div class="card stat-card"><div class="num">{{ doc_stats.obsolete }}</div><div class="label">Obsolete</div></div>
+  <div class="card stat-card"><div class="num">{{ doc_stats.missing }}</div><div class="label">Missing</div></div>
+  <div class="card stat-card"><div class="num">{{ copy_stats.issued }}</div><div class="label">Copies Issued</div></div>
+  <div class="card stat-card"><div class="num">{{ copy_stats.available }}</div><div class="label">Copies Available</div></div>
+</div>
+
+<h2>Storage Statistics</h2>
+<div class="grid cols-4">
+  <div class="card stat-card"><div class="num">{{ storage_stats.rooms }}</div><div class="label">Storage Rooms</div></div>
+  <div class="card stat-card"><div class="num">{{ storage_stats.racks }}</div><div class="label">Racks</div></div>
+  <div class="card stat-card"><div class="num">{{ storage_stats.sub_racks }}</div><div class="label">Sub-Racks</div></div>
+  <div class="card stat-card"><div class="num">{{ storage_stats.positions }}</div><div class="label">Positions</div></div>
+</div>
+
+<h2>Today's Transactions</h2>
+<div class="grid cols-3">
+  <div class="card stat-card"><div class="num">{{ txn_stats.issued_today }}</div><div class="label">Issued Today</div></div>
+  <div class="card stat-card"><div class="num">{{ txn_stats.returned_today }}</div><div class="label">Returned Today</div></div>
+  <div class="card stat-card"><div class="num">{{ txn_stats.transferred_today }}</div><div class="label">Transferred Today</div></div>
+</div>
+
+<h2>Overdue Documents</h2>
+<div class="card">
+  {% if overdue %}
+  <table>
+    <tr><th>Copy ID</th><th>Issued To</th><th>Expected Return</th></tr>
+    {% for o in overdue %}
+    <tr>
+      <td>{{ o.document_copy_id }}</td>
+      <td>{{ o.issued_to.full_name }}</td>
+      <td><span class="badge overdue">{{ o.expected_return_date }}</span></td>
+    </tr>
+    {% endfor %}
+  </table>
+  {% else %}
+  <p class="muted">No overdue documents.</p>
+  {% endif %}
+</div>
+{% endblock %}

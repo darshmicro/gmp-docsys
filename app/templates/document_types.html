@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Document Types</h1>
+<a class="btn" href="/admin/document-types/new">+ Add Document Type</a>
+<br><br>
+<div class="card">
+<table>
+  <tr><th>Code</th><th>Name</th><th>Status</th><th></th></tr>
+  {% for t in types %}
+  <tr>
+    <td>{{ t.code }}</td><td>{{ t.name }}</td>
+    <td>{% if t.is_active %}<span class="badge active">ACTIVE</span>{% else %}<span class="badge archived">INACTIVE</span>{% endif %}</td>
+    <td><a class="btn secondary" href="/admin/document-types/{{ t.id }}/edit">Edit</a></td>
+  </tr>
+  {% endfor %}
+</table>
+</div>
+{% endblock %}

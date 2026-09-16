@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Users &amp; Roles</h1>
+<a class="btn" href="/admin/users/new">+ Add New User</a>
+<br><br>
+<div class="card">
+<table>
+  <tr><th>User</th><th>Username</th><th>Current Roles</th><th>Add Role</th><th>Password</th></tr>
+  {% for u in users %}
+  <tr>
+    <td>{{ u.full_name }}</td>
+    <td>{{ u.ad_username }}</td>
+    <td>
+      {% for r in u.roles %}
+        <span class="badge active">{{ r.code }}</span>
+        <form class="inline" method="post" action="/admin/users/{{ u.id }}/remove-role">
+          <input type="hidden" name="role_id" value="{{ r.id }}">
+          <button class="btn danger" style="padding:2px 8px;font-size:11px" type="submit"
+                  onclick="return confirm('Remove {{ r.code }} role from {{ u.full_name }}?')">✕</button>
+        </form>
+      {% else %}
+        <span class="muted">No role assigned</span>
+      {% endfor %}
+    </td>
+    <td>
+      <form class="inline" method="post" action="/admin/users/{{ u.id }}/assign-role">
+        <select name="role_id" style="width:auto;display:inline">
+          {% for r in roles %}<option value="{{ r.id }}">{{ r.code }}</option>{% endfor %}
+        </select>
+        <button class="btn secondary" type="submit">Assign</button>
+      </form>
+    </td>
+    <td>
+      {% if u.local_password_hash %}
+        <a class="btn secondary" href="/admin/users/{{ u.id }}/reset-password">Reset Password</a>
+      {% else %}
+        <span class="muted">Managed via AD</span>
+      {% endif %}
+    </td>
+  </tr>
+  {% endfor %}
+</table>
+</div>
+{% endblock %}

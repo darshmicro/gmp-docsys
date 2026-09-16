@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>{{ "Issue Requests" if can_approve else "My Issue Requests" }}</h1>
+{% if can_request %}
+<a class="btn" href="/issue-requests/new">+ New Request</a>
+<br><br>
+{% endif %}
+{% if not can_approve %}
+<p class="muted">Requests you've submitted, and their current status.</p>
+{% endif %}
+
+<div class="card">
+<table>
+  <tr>
+    <th>Requested</th>
+    {% if can_approve %}<th>Requested By</th>{% endif %}
+    <th>Document</th>
+    <th>Purpose</th>
+    <th>Status</th>
+    {% if can_approve %}<th>Action</th>{% endif %}
+  </tr>
+  {% for r in requests_list %}
+  <tr>
+    <td>{{ r.requested_date.strftime('%d-%b-%Y %H:%M') }}</td>
+    {% if can_approve %}<td>{{ r.requested_by.full_name }}</td>{% endif %}
+    <td><a href="/documents/{{ r.document_copy.document_id }}">{{ r.document_copy.document.document_number }}</a>
+        (Copy {{ r.document_copy.copy_number }})</td>
+    <td>{{ r.purpose or '—' }}</td>
+    <td>
+      {% if r.status == 'PENDING' %}<span class="badge issued">PENDING</span>
+      {% elif r.status == 'APPROVED' %}<span class="badge available">APPROVED</span>
+      {% else %}<span class="badge missing">REJECTED</span>{% endif %}
+      {% if r.status != 'PENDING' and r.decided_by %}
+        <div class="muted">by {{ r.decided_by.full_name }}</div>
+      {% endif %}
+    </td>
+    {% if can_approve %}
+    <td>
+      {% if r.status == 'PENDING' %}
+        <form class="inline" method="post" action="/issue-requests/{{ r.id }}/approve" style="display:inline-block">
+          <input type="date" name="expected_return_date" required style="width:auto;display:inline;font-size:11px">
+          <button class="btn" style="padding:5px 10px;font-size:11px" type="submit">Approve</button>
+        </form>
+        <form class="inline" method="post" action="/issue-requests/{{ r.id }}/reject">
+          <input type="hidden" name="decision_reason" value="Rejected by approver">
+          <button class="btn danger" style="padding:5px 10px;font-size:11px" type="submit"
+                  onclick="return confirm('Reject this request?')">Reject</button>
+        </form>
+      {% else %}
+        <span class="muted">—</span>
+      {% endif %}
+    </td>
+    {% endif %}
+  </tr>
+  {% else %}
+  <tr><td colspan="6" class="muted">No requests yet.</td></tr>
+  {% endfor %}
+</table>
+</div>
+{% endblock %}

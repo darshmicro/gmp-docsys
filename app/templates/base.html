@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}GMP Document Tracking{% endblock %}</title>
+<link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+{% set branding = company_branding() %}
+<div class="topbar">
+  <button class="menu-toggle" onclick="toggleSidebar()" aria-label="Menu">☰</button>
+  <div class="brand">
+    {% if branding.company_logo %}<img src="{{ branding.company_logo }}" alt="logo" style="height:28px;vertical-align:middle;margin-right:8px">{% endif %}
+    🧪 {{ branding.company_name or "GMP Document Storage & Tracking System" }}
+  </div>
+  <div class="user">
+    {% if user %}{{ user.full_name }} &nbsp;|&nbsp; <a href="/logout">Logout</a>{% endif %}
+  </div>
+</div>
+<div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
+<div class="layout">
+  <div class="sidebar" id="sidebar">
+    <a href="/dashboard">Dashboard</a>
+    <div class="section-label">Documents</div>
+    <a href="/documents">Document Master</a>
+    <a href="/documents/new">Register Document</a>
+    <a href="/search">Search Documents</a>
+    <a href="/issued-documents">Issued Documents</a>
+    <a href="/issue-requests">Issue Requests</a>
+    <div class="section-label">Storage</div>
+    <a href="/storage">Storage Rooms</a>
+    <a href="/storage/map">Manage Storage Map</a>
+    <a href="/storage/map/lookup">Find by Location</a>
+    <a href="/storage/export/document-locations.xlsx">Export Locations (Excel)</a>
+    <div class="section-label">Master Data</div>
+    <a href="/admin/departments">Departments</a>
+    <a href="/admin/document-types">Document Types</a>
+    <div class="section-label">Governance</div>
+    <a href="/audit">Audit Trail</a>
+    <a href="/admin/users">Users &amp; Roles</a>
+    <a href="/admin/config">Company Settings</a>
+    <div class="section-label">My Account</div>
+    <a href="/account/change-password">Change Password</a>
+  </div>
+  <div class="content">
+    {% block content %}{% endblock %}
+  </div>
+</div>
+<script>
+  function toggleSidebar() {
+    document.getElementById('sidebar').classList.toggle('open');
+    document.getElementById('sidebar-overlay').classList.toggle('visible');
+  }
+  function closeSidebar() {
+    document.getElementById('sidebar').classList.remove('open');
+    document.getElementById('sidebar-overlay').classList.remove('visible');
+  }
+  // Tapping a nav link on mobile should close the drawer, not leave it open
+  // over the newly-loaded page underneath.
+  document.querySelectorAll('.sidebar a').forEach(function(link) {
+    link.addEventListener('click', closeSidebar);
+  });
+</script>
+</body>
+</html>

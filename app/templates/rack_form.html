@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>{{ "Edit" if rack else "Add" }} Rack in {{ room.code }}</h1>
+<div class="card" style="max-width:420px">
+<form method="post" action="{{ '/storage/racks/' + rack.id|string + '/edit' if rack else '/storage/racks/new' }}">
+  {% if not rack %}<input type="hidden" name="room_id" value="{{ room.id }}">{% endif %}
+  <label>Rack Number</label><input name="rack_number" value="{{ rack.rack_number if rack else '' }}" placeholder="R04" required>
+  <label>Description</label><input name="description" value="{{ rack.description if rack else '' }}">
+  {% if rack %}
+  <label><input type="checkbox" name="is_active" value="true" {% if rack.is_active %}checked{% endif %} style="width:auto;display:inline"> Active</label>
+  {% endif %}
+  <br><br>
+  <button class="btn" type="submit">Save</button>
+</form>
+</div>
+{% endblock %}

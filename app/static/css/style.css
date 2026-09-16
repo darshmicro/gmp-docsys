@@ -1,0 +1,291 @@
+/* ============================================================================
+   DESIGN CONCEPT — "Pharmacopeia Seal"
+   Grounded in the subject matter: a certified, tamper-evident archive.
+   The wax-seal/embossed-stamp motif (gold ribbon, raised medallion) marks
+   the two things that matter most in this app — the physical location of
+   a document, and the confirmation of an action — everything else (tables,
+   forms, plain cards) stays quiet and disciplined so that motif stands out.
+   No web fonts are loaded — this runs on an intranet with no guaranteed
+   internet access, so everything uses the operating system's own fonts.
+   ============================================================================ */
+:root {
+  /* Ink — navy, used for chrome (topbar/sidebar) and primary text */
+  --ink: #16233F;
+  --ink-deep: #0A1226;
+
+  /* Paper — warm, low-contrast background (a lab spec sheet, not a hospital) */
+  --paper: #FAF8F3;
+  --card-bg: #FFFFFF;
+
+  /* Seal gold — the one bold accent: certification, primary actions */
+  --seal: #C6922F;
+  --seal-light: #E3B65B;
+  --seal-deep: #93691E;
+
+  /* Vial teal — secondary accent: reagent glass, "available/good" states */
+  --teal: #1F7A6C;
+  --teal-deep: #124A41;
+  --teal-light: #E3F3EF;
+
+  /* Reserved strictly for danger/overdue — never decorative */
+  --coral: #B23F28;
+  --coral-light: #FBE8E3;
+
+  --warning: #A5701A;
+  --warning-light: #FBF0DC;
+
+  --border: #E6E0D3;
+  --text: #23283A;
+  --muted: #6E6858;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: -apple-system, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  background: var(--paper);
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+}
+
+code, .mono { font-family: ui-monospace, "Cascadia Mono", "SF Mono", Consolas, monospace; }
+
+/* ---------------------------------------------------------------- CHROME --- */
+
+.topbar {
+  background: linear-gradient(180deg, var(--ink) 0%, var(--ink-deep) 100%);
+  color: #fff;
+  padding: 0 24px;
+  display: flex; align-items: center; justify-content: space-between;
+  height: 56px;
+  box-shadow: 0 2px 14px rgba(0,0,0,.28);
+  position: relative; z-index: 5;
+}
+.topbar .brand { font-weight: 700; font-size: 16px; letter-spacing: .01em; }
+.topbar .user { font-size: 13px; opacity: 0.85; }
+.topbar a { color: #fff; text-decoration: none; }
+.topbar a:hover { color: var(--seal-light); }
+
+.menu-toggle {
+  display: none; background: none; border: none; color: #fff; font-size: 22px;
+  cursor: pointer; padding: 4px 10px 4px 0; line-height: 1;
+}
+.sidebar-overlay {
+  display: none; position: fixed; inset: 0; background: rgba(6,10,20,0.55); z-index: 15;
+}
+.sidebar-overlay.visible { display: block; }
+
+.layout { display: flex; min-height: calc(100vh - 56px); }
+
+.sidebar {
+  width: 224px; flex-shrink: 0; padding: 16px 0;
+  background: linear-gradient(180deg, var(--ink) 0%, var(--ink-deep) 100%);
+}
+.sidebar a {
+  display: block; padding: 10px 20px; color: #C9CEDC; text-decoration: none; font-size: 14px;
+  border-left: 3px solid transparent;
+  transition: background .12s ease, border-color .12s ease, color .12s ease;
+}
+.sidebar a:hover, .sidebar a.active {
+  background: rgba(198,146,47,.14); border-left-color: var(--seal); color: #fff;
+}
+.sidebar .section-label {
+  padding: 16px 20px 6px; font-size: 11px; letter-spacing: 0.04em; color: var(--seal-light);
+  font-weight: 600; opacity: .85;
+}
+
+.content { flex: 1; padding: 26px; max-width: 1200px; }
+
+/* ----------------------------------------------------------------- CARDS --- */
+
+.card {
+  background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px;
+  padding: 20px; margin-bottom: 20px;
+  box-shadow: 0 1px 0 rgba(255,255,255,.7) inset, 0 10px 24px -14px rgba(22,35,63,.22), 0 1px 3px rgba(22,35,63,.06);
+}
+
+.grid { display: grid; gap: 16px; }
+.grid.cols-4 { grid-template-columns: repeat(4, 1fr); }
+.grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
+.grid.cols-2 { grid-template-columns: repeat(2, 1fr); }
+
+.stat-card { text-align: center; }
+.stat-card .num { font-size: 30px; font-weight: 700; color: var(--ink); letter-spacing: -.01em; }
+.stat-card .label { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+h1 { font-size: 21px; margin: 0 0 16px; color: var(--ink); font-weight: 700; letter-spacing: -.01em; }
+h2 { font-size: 16px; margin: 0 0 12px; color: var(--ink); font-weight: 600; }
+
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+th, td { text-align: left; padding: 9px 10px; border-bottom: 1px solid var(--border); }
+th { background: #F3EFE4; color: var(--ink); font-weight: 600; }
+tr:hover td { background: #FBF8EF; }
+
+/* ---------------------------------------------------------------- BADGES --- */
+/* Small "wax stamp" treatment — a raised chip rather than a flat pill. */
+
+.badge {
+  display: inline-flex; align-items: center;
+  padding: 3px 11px; border-radius: 20px; font-size: 11px; font-weight: 700; letter-spacing: .01em;
+  box-shadow: 0 1px 2px rgba(0,0,0,.12), 0 0 0 1px rgba(0,0,0,.03) inset;
+}
+.badge.available, .badge.active { background: linear-gradient(180deg, #E3F5EA, #CBEBD9); color: var(--teal-deep); }
+.badge.issued, .badge.under_review { background: linear-gradient(180deg, #FBF0DC, #F5E1B7); color: var(--warning); }
+.badge.missing, .badge.overdue, .badge.obsolete { background: linear-gradient(180deg, #FBE8E3, #F5CFC5); color: var(--coral); }
+.badge.archived, .badge.superseded { background: linear-gradient(180deg, #EEEBE2, #E2DDD0); color: var(--muted); }
+
+/* ---------------------------------------------------------------- BUTTONS --- */
+/* Genuine tactile depth: a raised bezel that visibly presses down on click,
+   rather than a flat color swap — the one place motion answers an action. */
+
+.btn {
+  display: inline-block; text-decoration: none; cursor: pointer;
+  font-size: 13px; font-weight: 600; letter-spacing: .01em;
+  padding: 9px 18px; border-radius: 8px; border: 1px solid var(--seal-deep);
+  color: #2E1F05;
+  background: linear-gradient(180deg, var(--seal-light) 0%, var(--seal) 60%, var(--seal-deep) 100%);
+  box-shadow: 0 1px 0 rgba(255,255,255,.55) inset, 0 3px 0 var(--seal-deep), 0 7px 12px -4px rgba(60,42,6,.4);
+  transform: translateY(0);
+  transition: transform .08s ease, box-shadow .08s ease, filter .12s ease;
+}
+.btn:hover { filter: brightness(1.05); }
+.btn:active {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 rgba(255,255,255,.35) inset, 0 0 0 var(--seal-deep), 0 2px 4px rgba(60,42,6,.35);
+}
+
+.btn.secondary {
+  color: var(--teal-deep); border: 1px solid var(--teal);
+  background: linear-gradient(180deg, #FFFFFF 0%, #F1F8F6 100%);
+  box-shadow: 0 1px 0 rgba(255,255,255,.7) inset, 0 3px 0 rgba(31,122,108,.28), 0 6px 10px -4px rgba(18,74,65,.25);
+}
+.btn.secondary:active {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 rgba(255,255,255,.5) inset, 0 0 0 rgba(31,122,108,.25), 0 2px 4px rgba(18,74,65,.2);
+}
+
+.btn.danger {
+  color: #fff; border: 1px solid #7A2A18;
+  background: linear-gradient(180deg, #D25B41 0%, var(--coral) 60%, #7A2A18 100%);
+  box-shadow: 0 1px 0 rgba(255,255,255,.3) inset, 0 3px 0 #7A2A18, 0 7px 12px -4px rgba(60,20,10,.4);
+}
+.btn.danger:active {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 rgba(255,255,255,.2) inset, 0 0 0 #7A2A18, 0 2px 4px rgba(60,20,10,.35);
+}
+
+form.inline { display: inline; }
+
+input, select, textarea {
+  padding: 8px 11px; border: 1px solid var(--border); border-radius: 6px; font-size: 13px; width: 100%;
+  background: #fff; color: var(--text);
+  transition: border-color .12s ease, box-shadow .12s ease;
+}
+input:focus, select:focus, textarea:focus {
+  outline: none; border-color: var(--teal); box-shadow: 0 0 0 3px rgba(31,122,108,.15);
+}
+label { font-size: 12px; color: var(--muted); display: block; margin: 8px 0 4px; font-weight: 600; }
+
+/* ----------------------------------------------------- LOCATION CARD (hero) --- */
+/* This is the one deliberate 3D "medallion" moment — reserved for the single
+   most important fact in the app: where a physical document actually is. */
+
+.location-card {
+  background: linear-gradient(150deg, var(--teal) 0%, var(--ink) 100%);
+  color: #fff; border-radius: 14px; padding: 24px; position: relative;
+  border: 1px solid rgba(255,255,255,.08);
+  box-shadow: 0 1px 0 rgba(255,255,255,.15) inset, 0 18px 34px -14px rgba(10,18,38,.55), 0 4px 10px rgba(10,18,38,.3);
+}
+.location-card::before {
+  content: ""; position: absolute; top: 0; left: 26px; right: 26px; height: 4px;
+  background: linear-gradient(90deg, var(--seal) 0%, var(--seal-light) 50%, var(--seal) 100%);
+  border-radius: 0 0 3px 3px;
+}
+.location-card .code {
+  font-family: ui-monospace, "Cascadia Mono", "SF Mono", Consolas, monospace;
+  font-size: 22px; font-weight: 700; letter-spacing: 0.04em; margin-top: 8px;
+}
+.location-path span { opacity: 0.9; font-size: 13px; }
+.location-path span::after { content: " → "; opacity: 0.55; }
+.location-path span:last-child::after { content: ""; }
+
+.error-box { background: var(--coral-light); border: 1px solid #E3A896; color: var(--coral); padding: 14px; border-radius: 8px; }
+
+/* -------------------------------------------------------------- LOGIN PAGE --- */
+
+.login-wrap {
+  display: flex; align-items: center; justify-content: center; height: 100vh;
+  background: radial-gradient(ellipse at 30% 15%, #234A68 0%, var(--ink-deep) 55%, #060A14 100%);
+}
+.login-box {
+  background: var(--paper); padding: 36px; border-radius: 16px; width: 340px;
+  border: 1px solid rgba(255,255,255,.08);
+  box-shadow: 0 1px 0 rgba(255,255,255,.6) inset, 0 34px 64px -20px rgba(0,0,0,.55), 0 10px 22px rgba(0,0,0,.22);
+  animation: rise .35s ease-out;
+}
+.login-box h1 { display: flex; align-items: center; gap: 8px; }
+@keyframes rise {
+  from { opacity: 0; transform: translateY(10px) scale(.98); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* ---------------------------------------------------------------- TIMELINE --- */
+
+.timeline { border-left: 2px solid var(--border); padding-left: 16px; margin-left: 4px; }
+.timeline .item { margin-bottom: 14px; position: relative; }
+.timeline .item::before {
+  content: ""; width: 9px; height: 9px; border-radius: 50%;
+  background: linear-gradient(180deg, var(--seal-light), var(--seal-deep));
+  box-shadow: 0 0 0 2px var(--paper), 0 1px 2px rgba(0,0,0,.25);
+  position: absolute; left: -21px; top: 5px;
+}
+.timeline .date { font-size: 11px; color: var(--muted); }
+
+.muted { color: var(--muted); font-size: 12px; }
+
+/* ============================================================================
+   MOBILE / SMALL SCREEN LAYOUT
+   Applies at 768px and narrower — phones and small tablets. The sidebar
+   becomes a slide-in drawer (hidden by default, toggled by the ☰ button in
+   base.html), cards/tables get room to breathe by going full-width, wide
+   tables scroll horizontally within their card instead of squeezing every
+   column, and multi-column stat grids collapse to a single column so
+   nothing gets cut off or requires pinch-zooming.
+   ============================================================================ */
+@media (max-width: 768px) {
+  .menu-toggle { display: inline-block; }
+
+  .topbar { padding: 0 12px; }
+  .topbar .brand { font-size: 14px; }
+  .topbar .user { display: none; }
+
+  .layout { position: relative; }
+  .sidebar {
+    position: fixed; top: 56px; left: 0; bottom: 0; width: 250px;
+    transform: translateX(-100%); transition: transform 0.2s ease-out;
+    z-index: 20; overflow-y: auto;
+  }
+  .sidebar.open { transform: translateX(0); }
+
+  .content { padding: 14px; max-width: 100%; }
+
+  .grid.cols-4, .grid.cols-3, .grid.cols-2 { grid-template-columns: 1fr; }
+
+  .card { overflow-x: auto; }
+  table { min-width: 520px; }
+
+  h1 { font-size: 18px; }
+  h2 { font-size: 14px; }
+
+  .btn, input, select, textarea, button { min-height: 40px; }
+  .btn { padding: 10px 16px; }
+
+  .login-box { width: 90%; max-width: 340px; }
+}
+
+/* Respect reduced-motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .login-box { animation: none; }
+  .btn { transition: none; }
+}

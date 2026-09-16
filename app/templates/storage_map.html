@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Storage Map</h1>
+<p class="muted">Documents currently stored at each position.</p>
+<div class="card">
+<table>
+  <tr><th>Location Code</th><th>Document Count</th></tr>
+  {% for g in grid %}
+  <tr>
+    <td>{{ g.location_code }}</td>
+    <td>{{ g.count }}</td>
+  </tr>
+  {% endfor %}
+</table>
+</div>
+{% endblock %}

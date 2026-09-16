@@ -1,0 +1,21 @@
+fastapi==0.115.0
+uvicorn[standard]==0.30.6
+SQLAlchemy==2.0.35
+jinja2==3.1.4
+python-multipart==0.0.9
+itsdangerous==2.2.0
+passlib[bcrypt]==1.7.4
+bcrypt==4.0.1
+# ^ pinned deliberately: passlib 1.7.4's bcrypt backend detection breaks on
+#   bcrypt>=4.1 / 5.x ("AttributeError: module 'bcrypt' has no attribute
+#   '__about__'"), which crashes app/seed.py partway through — after Roles
+#   are committed but before any Users are created. If you skip this pin,
+#   you can hit exactly that: seed.py appears to finish, but every login
+#   fails with "invalid username" because no user rows exist, and re-running
+#   seed.py just says "Already seeded — skipping" without fixing it.
+ldap3==2.9.1
+reportlab==4.2.2
+openpyxl==3.1.5
+
+# Production DB driver (SQL Server) — install instead of/alongside sqlite for prod:
+# pyodbc==5.1.0

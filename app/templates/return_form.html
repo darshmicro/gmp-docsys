@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Return Document Copy {{ copy.copy_number }}</h1>
+<div class="card" style="max-width:480px">
+{% if open_txn %}
+<p class="muted">Currently issued to: {{ open_txn.issued_to.full_name }}</p>
+<form method="post" action="/return/{{ copy.id }}">
+  <label>Physical Condition</label>
+  <input name="physical_condition" value="Good">
+  <label>Remarks</label>
+  <input name="remarks">
+  <br><br>
+  <button class="btn" type="submit">Confirm Return</button>
+</form>
+{% else %}
+<p class="error-box">No open issue transaction found for this copy.</p>
+{% endif %}
+</div>
+{% endblock %}

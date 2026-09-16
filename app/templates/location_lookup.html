@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Look Up Documents by Storage Location</h1>
+<div class="card" style="max-width:420px">
+<form method="get" action="/storage/location/redirect" onsubmit="return goTo()">
+  <label>Storage Location</label>
+  <select id="pos-select">
+    {% for p in positions %}<option value="{{ p.id }}">{{ p.location_code }}</option>{% endfor %}
+  </select>
+  <br><br>
+  <button class="btn" type="button" onclick="goTo()">View Documents</button>
+</form>
+</div>
+<script>
+function goTo() {
+  var id = document.getElementById('pos-select').value;
+  window.location.href = '/storage/location/' + id + '/documents';
+  return false;
+}
+</script>
+{% endblock %}

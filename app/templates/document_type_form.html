@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>{{ "Edit" if dtype else "Add" }} Document Type</h1>
+<div class="card" style="max-width:420px">
+<form method="post" action="{{ '/admin/document-types/' + dtype.id|string + '/edit' if dtype else '/admin/document-types/new' }}">
+  <label>Code</label>
+  <input name="code" value="{{ dtype.code if dtype else '' }}" required>
+  <label>Name</label>
+  <input name="name" value="{{ dtype.name if dtype else '' }}" required>
+  {% if dtype %}
+  <label><input type="checkbox" name="is_active" value="true" {% if dtype.is_active %}checked{% endif %} style="width:auto;display:inline"> Active</label>
+  {% endif %}
+  <br><br>
+  <button class="btn" type="submit">Save</button>
+</form>
+</div>
+{% endblock %}

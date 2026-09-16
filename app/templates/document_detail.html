@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>{{ doc.document_number }} — {{ doc.title }}</h1>
+<p class="muted">Revision {{ doc.revision_number }} &nbsp;|&nbsp; Status: <span class="badge {{ doc.status|lower }}">{{ doc.status }}</span></p>
+
+<h2>Copies &amp; Physical Location <a class="btn secondary" style="font-size:12px" href="/documents/{{ doc.id }}/copies/new">+ Add Copy</a></h2>
+<div class="grid cols-2">
+  {% for c in copies %}
+  <div class="location-card">
+    <div>Copy {{ c.copy_number }} ({{ c.original_or_copy }}, {{ c.controlled_status }})</div>
+    {% if c.current_position_id and breadcrumbs.get(c.id) %}
+      {% set b = breadcrumbs[c.id] %}
+      <div class="location-path" style="margin-top:8px">
+        <span>{{ b.room }}</span><span>Rack {{ b.rack }}</span><span>Sub-Rack {{ b.sub_rack }}</span>
+        <span>Shelf {{ b.shelf }}</span><span>Position {{ b.position }}</span>
+      </div>
+      <div class="code">{{ b.location_code }}</div>
+    {% else %}
+      <div class="muted" style="color:#fff">Not yet placed in storage</div>
+    {% endif %}
+    <div style="margin-top:10px">
+      Status:
+      {% if c.copy_status == 'ISSUED' %}
+        <strong>ISSUED TO: {{ c.current_custodian.full_name if c.current_custodian else 'Unknown' }}</strong>
+      {% else %}
+        <strong>{{ c.copy_status }}</strong>
+      {% endif %}
+    </div>
+    <div style="margin-top:12px">
+      {% if c.copy_status == 'AVAILABLE' %}
+        {% if can_issue %}
+          <a class="btn secondary" style="background:#fff" href="/issue/{{ c.id }}">Issue</a>
+          <a class="btn secondary" style="background:#fff" href="/transfer/{{ c.id }}">Transfer</a>
+        {% elif can_request_issue %}
+          <a class="btn secondary" style="background:#fff" href="/documents/{{ doc.id }}/copies/{{ c.id }}/request-issue">Request Issue</a>
+        {% endif %}
+      {% elif c.copy_status == 'ISSUED' %}
+        {% if can_issue %}
+          <a class="btn secondary" style="background:#fff" href="/return/{{ c.id }}">Return</a>
+        {% endif %}
+      {% endif %}
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+<h2 style="margin-top:24px">Complete Movement History</h2>
+<div class="card">
+  <div class="timeline">
+    {% for h in history %}
+    <div class="item">
+      <div class="date">{{ h.date.strftime('%d-%b-%Y %H:%M') }}</div>
+      <div>{{ h.event }}{% if h.reason %} — <span class="muted">{{ h.reason }}</span>{% endif %}</div>
+    </div>
+    {% else %}
+    <p class="muted">No history recorded yet.</p>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

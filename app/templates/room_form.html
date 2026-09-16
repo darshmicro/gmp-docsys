@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>{{ "Edit" if room else "Add" }} Storage Room</h1>
+<div class="card" style="max-width:420px">
+<form method="post" action="{{ '/storage/rooms/' + room.id|string + '/edit' if room else '/storage/rooms/new' }}">
+  <label>Room Code</label><input name="code" value="{{ room.code if room else '' }}" placeholder="DR-03" required>
+  <label>Room Name</label><input name="name" value="{{ room.name if room else '' }}" required>
+  <label>Building</label><input name="building" value="{{ room.building if room else '' }}">
+  <label>Floor</label><input name="floor" value="{{ room.floor if room else '' }}">
+  <label>Area</label><input name="area" value="{{ room.area if room else '' }}">
+  {% if room %}
+  <label><input type="checkbox" name="is_active" value="true" {% if room.is_active %}checked{% endif %} style="width:auto;display:inline"> Active</label>
+  {% endif %}
+  <br><br>
+  <button class="btn" type="submit">Save</button>
+</form>
+</div>
+{% endblock %}

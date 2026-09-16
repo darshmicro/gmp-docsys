@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Storage Rooms</h1>
+<a class="btn" href="/storage/rooms/new">+ Add Storage Room</a>
+<a class="btn secondary" href="/storage/map">Manage Storage Map</a>
+<br><br>
+<div class="card">
+<table>
+  <tr><th>Code</th><th>Name</th><th>Building</th><th>Status</th><th></th></tr>
+  {% for r in rooms %}
+  <tr>
+    <td>{{ r.code }}</td><td>{{ r.name }}</td><td>{{ r.building or '—' }}</td>
+    <td><span class="badge active">{{ r.status }}</span></td>
+    <td>
+      <a class="btn secondary" href="/storage/rooms/{{ r.id }}/edit">Edit</a>
+      <a class="btn secondary" href="/storage/rooms/{{ r.id }}/documents">Documents Here</a>
+    </td>
+  </tr>
+  {% endfor %}
+</table>
+</div>
+{% endblock %}

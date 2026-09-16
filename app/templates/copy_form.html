@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Add Copy — {{ doc.document_number }}</h1>
+<div class="card" style="max-width:480px">
+<form method="post" action="/documents/{{ doc.id }}/copies/new">
+  <label>Copy Number</label>
+  <input name="copy_number" value="02" required>
+
+  <label>Storage Room</label>
+  <select id="sel-room" onchange="onRoomChange()"><option value="">-- none --</option></select>
+  <label>Rack</label>
+  <select id="sel-rack" onchange="onRackChange()" disabled><option value="">-- select room first --</option></select>
+  <label>Sub-Rack</label>
+  <select id="sel-subrack" onchange="onSubRackChange()" disabled><option value="">-- select rack first --</option></select>
+  <label>Shelf</label>
+  <select id="sel-shelf" onchange="onShelfChange()" disabled><option value="">-- select sub-rack first --</option></select>
+  <label>Position</label>
+  <select id="sel-position" name="position_id" disabled><option value="">-- select shelf first --</option></select>
+
+  <br><br>
+  <button class="btn" type="submit">Add Copy</button>
+</form>
+</div>
+
+<script>
+const HIERARCHY = {{ hierarchy_json|safe }};
+
+function populate(select, items, placeholder) {
+  select.innerHTML = '<option value="">' + placeholder + '</option>';
+  items.forEach(function(item) {
+    const opt = document.createElement('option');
+    opt.value = item.id;
+    opt.textContent = item.label;
+    select.appendChild(opt);
+  });
+  select.disabled = items.length === 0;
+}
+populate(document.getElementById('sel-room'), HIERARCHY.rooms, '-- none --');
+
+function onRoomChange() {
+  const roomId = document.getElementById('sel-room').value;
+  const room = HIERARCHY.rooms.find(r => String(r.id) === roomId);
+  populate(document.getElementById('sel-rack'), room ? room.racks : [], '-- select rack --');
+  populate(document.getElementById('sel-subrack'), [], '-- select rack first --');
+  populate(document.getElementById('sel-shelf'), [], '-- select sub-rack first --');
+  populate(document.getElementById('sel-position'), [], '-- select shelf first --');
+}
+function onRackChange() {
+  const roomId = document.getElementById('sel-room').value;
+  const rackId = document.getElementById('sel-rack').value;
+  const room = HIERARCHY.rooms.find(r => String(r.id) === roomId);
+  const rack = room ? room.racks.find(r => String(r.id) === rackId) : null;
+  populate(document.getElementById('sel-subrack'), rack ? rack.sub_racks : [], '-- select sub-rack --');
+  populate(document.getElementById('sel-shelf'), [], '-- select sub-rack first --');
+  populate(document.getElementById('sel-position'), [], '-- select shelf first --');
+}
+function onSubRackChange() {
+  const roomId = document.getElementById('sel-room').value;
+  const rackId = document.getElementById('sel-rack').value;
+  const subId = document.getElementById('sel-subrack').value;
+  const room = HIERARCHY.rooms.find(r => String(r.id) === roomId);
+  const rack = room ? room.racks.find(r => String(r.id) === rackId) : null;
+  const sub = rack ? rack.sub_racks.find(s => String(s.id) === subId) : null;
+  populate(document.getElementById('sel-shelf'), sub ? sub.shelves : [], '-- select shelf --');
+  populate(document.getElementById('sel-position'), [], '-- select shelf first --');
+}
+function onShelfChange() {
+  const roomId = document.getElementById('sel-room').value;
+  const rackId = document.getElementById('sel-rack').value;
+  const subId = document.getElementById('sel-subrack').value;
+  const shelfId = document.getElementById('sel-shelf').value;
+  const room = HIERARCHY.rooms.find(r => String(r.id) === roomId);
+  const rack = room ? room.racks.find(r => String(r.id) === rackId) : null;
+  const sub = rack ? rack.sub_racks.find(s => String(s.id) === subId) : null;
+  const shelf = sub ? sub.shelves.find(s => String(s.id) === shelfId) : null;
+  const posSelect = document.getElementById('sel-position');
+  posSelect.innerHTML = '<option value="">-- none --</option>';
+  (shelf ? shelf.positions : []).forEach(function(p) {
+    const opt = document.createElement('option');
+    opt.value = p.id;
+    opt.textContent = p.label + ' (' + p.code + ')';
+    posSelect.appendChild(opt);
+  });
+  posSelect.disabled = !shelf || shelf.positions.length === 0;
+}
+</script>
+{% endblock %}

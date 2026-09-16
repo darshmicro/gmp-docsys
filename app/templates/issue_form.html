@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Issue Document Copy {{ copy.copy_number }}</h1>
+<div class="card" style="max-width:480px">
+<form method="post" action="/issue/{{ copy.id }}">
+  <label>Issue To</label>
+  <select name="issued_to_user_id" required>
+    {% for u in users %}<option value="{{ u.id }}">{{ u.full_name }}</option>{% endfor %}
+  </select>
+  <label>Purpose</label>
+  <input name="purpose">
+  <label>Expected Return Date</label>
+  <input type="date" name="expected_return_date" required>
+  <br><br>
+  <button class="btn" type="submit">Issue Document</button>
+</form>
+</div>
+{% endblock %}

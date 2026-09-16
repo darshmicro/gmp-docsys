@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Request Issue — Copy {{ copy.copy_number }}</h1>
+<div class="card" style="max-width:480px">
+<p class="muted">Your request will need approval from a Doc Cell User or Admin before this copy is issued to you.</p>
+<form method="post" action="/documents/{{ copy.document_id }}/copies/{{ copy.id }}/request-issue">
+  <label>Purpose</label>
+  <input name="purpose" placeholder="Why do you need this document?">
+  <br><br>
+  <button class="btn" type="submit">Submit Request</button>
+</form>
+</div>
+{% endblock %}

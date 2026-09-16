@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>{{ "Edit" if shelf else "Add" }} Shelf in Sub-Rack {{ sub_rack.sub_rack_number }}</h1>
+<div class="card" style="max-width:420px">
+<form method="post" action="{{ '/storage/shelves/' + shelf.id|string + '/edit' if shelf else '/storage/shelves/new' }}">
+  {% if not shelf %}<input type="hidden" name="sub_rack_id" value="{{ sub_rack.id }}">{% endif %}
+  <label>Shelf Number</label><input name="shelf_number" value="{{ shelf.shelf_number if shelf else '' }}" placeholder="S05" required>
+  <label>Capacity</label><input name="capacity" type="number" value="{{ shelf.capacity if shelf else '' }}">
+  {% if shelf %}
+  <label><input type="checkbox" name="is_active" value="true" {% if shelf.is_active %}checked{% endif %} style="width:auto;display:inline"> Active</label>
+  {% endif %}
+  <br><br>
+  <button class="btn" type="submit">Save</button>
+</form>
+</div>
+{% endblock %}

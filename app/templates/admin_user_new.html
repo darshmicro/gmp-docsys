@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Add New User</h1>
+<p class="muted">Creates a local account. In an AD deployment, users normally get their profile
+   auto-created on first AD login — use this only for local/emergency accounts, or to
+   pre-provision someone before their first login.</p>
+<div class="card" style="max-width:480px">
+<form method="post" action="/admin/users/new">
+  <label>Username</label>
+  <input name="username" placeholder="local:jdoe or DOMAIN\jdoe" required>
+  <label>Full Name</label>
+  <input name="full_name" required>
+  <label>Email</label>
+  <input name="email" type="email">
+  <label>Designation</label>
+  <input name="designation">
+  <label>Initial Password</label>
+  <input name="password" type="password" required>
+  <label>Role</label>
+  <select name="role_id" required>
+    {% for r in roles %}<option value="{{ r.id }}">{{ r.code }}</option>{% endfor %}
+  </select>
+  <br><br>
+  <button class="btn" type="submit">Create User</button>
+</form>
+</div>
+{% endblock %}
